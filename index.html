@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+google-site-verification: google324050804f9ddf07.html
+    <title>news 4 you</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            color: #000;
+        }
+
+        header {
+            background: #1e1e1e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        nav {
+            background: #333;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            padding: 12px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* CATEGORY BUTTONS */
+        .categories {
+            max-width: 1000px;
+            margin: 20px auto;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .categories button {
+            padding: 10px 18px;
+            border: none;
+            background: #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .categories button:hover {
+            background: #ccc;
+        }
+
+        .categories button.active {
+            background: #0077cc;
+            color: white;
+        }
+
+        /* FEATURED */
+        .featured {
+            max-width: 1000px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .featured iframe {
+            width: 100%;
+            height: 350px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .featured .content {
+            padding: 20px;
+        }
+
+        /* LIVE FEED */
+        .live-feed {
+            max-width: 1000px;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .news-item {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .news-item h3 {
+            margin: 0;
+        }
+
+        .news-item p {
+            margin: 5px 0;
+        }
+
+        .news-item a {
+            color: #0077cc;
+            text-decoration: none;
+        }
+
+        .news-item a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background: #1e1e1e;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        /* DARK MODE */
+        body.dark {
+            background: #121212;
+            color: #e0e0e0;
+        }
+
+        body.dark header {
+            background: #000;
+        }
+
+        body.dark nav {
+            background: #111;
+        }
+
+        body.dark nav a {
+            color: #ddd;
+        }
+
+        body.dark .featured,
+        body.dark .live-feed,
+        body.dark .news-item {
+            background: #1e1e1e;
+            color: #e0e0e0;
+            box-shadow: 0 4px 10px rgba(255,255,255,0.05);
+        }
+
+        body.dark .categories button {
+            background: #333;
+            color: #eee;
+        }
+
+        body.dark .categories button.active {
+            background: #0077cc;
+            color: white;
+        }
+
+        body.dark footer {
+            background: #000;
+        }
+
+        #darkToggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>News 4 you</h1>
+    <p>Your source for the latest updates</p>
+    <button id="darkToggle">Dark Mode</button>
+</header>
+
+<nav>
+ <!-- CATEGORY BUTTONS -->
+<div class="categories">
+    <button onclick="loadNews('world')">World</button>
+    <button onclick="loadNews('uk')">UK</button>
+    <button onclick="loadNews('technology')">Technology</button>
+    <button onclick="loadNews('business')">Business</button>
+    <button onclick="loadNews('entertainment')">Entertainment</button>
+    <button onclick="loadNews('science')">Science</button>
+</div>
+</nav>
+
+<!-- FEATURED: LIVE RAIN RADAR -->
+<div class="featured">
+    <iframe 
+        src="https://embed.windy.com/embed2.html?lat=54.28&lon=-0.40&zoom=6&overlay=rain&menu=&message=true&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&detailLat=54.28&detailLon=-0.40&metricWind=default&metricTemp=default"
+        frameborder="0">
+    </iframe>
+
+    <div class="content">
+        <h2>Live UK Rain Radar</h2>
+        <p>Real‑time precipitation map powered by Windy.</p>
+    </div>
+</div>
+
+<!-- LIVE FEED -->
+<div class="live-feed">
+    <p id="timestamp" style="margin:0; opacity:0.7; font-size:14px;"></p>
+    <h2>Latest Headlines</h2>
+    <div id="news-container">Loading news...</div>
+</div>
+
+<footer>
+    <p>© 2026 Daily News — All Rights Reserved</p>
+</footer>
+
+<script>
+const feeds = {
+    world: "https://feeds.bbci.co.uk/news/world/rss.xml",
+    uk: "https://feeds.bbci.co.uk/news/uk/rss.xml",
+    technology: "https://feeds.bbci.co.uk/news/technology/rss.xml",
+    business: "https://feeds.bbci.co.uk/news/business/rss.xml",
+    entertainment: "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml",
+    science: "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml"
+};
+
+function setActiveButton(category) {
+    document.querySelectorAll(".categories button").forEach(btn => {
+        btn.classList.remove("active");
+        if (btn.textContent.toLowerCase() === category) {
+            btn.classList.add("active");
+        }
+    });
+}
+
+async function loadNews(category = "world") {
+    setActiveButton(category);
+
+    const rssUrl = feeds[category];
+    const apiUrl = "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(rssUrl);
+
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        const container = document.getElementById("news-container");
+        container.innerHTML = "";
+
+        data.items.forEach((article, index) => {
+            if (index >= 10) return;
+
+            const image = article.thumbnail || "https://placehold.co/600x300?text=No+Image";
+
+            const div = document.createElement("div");
+            div.className = "news-item";
+
+            div.innerHTML = `
+                <img src="${image}" style="width:100%; border-radius:6px; margin-bottom:10px;">
+                <h3>${article.title}</h3>
+                <p>${article.description}</p>
+                <a href="${article.link}" target="_blank">Read more</a>
+            `;
+
+            container.appendChild(div);
+        });
+    } catch (error) {
+        console.error(error);
+        document.getElementById("news-container").innerText = "Failed to load news.";
+    }
+}
+
+loadNews();
+updateTimestamp();
+function updateTimestamp() {
+    const now = new Date();
+    const formatted = now.toLocaleString("en-UK", {
+        hour: "2-digit",
+        minute: "2-digit",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+
+    document.getElementById("timestamp").textContent =
+        "Last updated: " + formatted;
+}
+
+// DARK MODE
+document.getElementById("darkToggle").addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    const isDark = document.body.classList.contains("dark");
+    document.getElementById("darkToggle").textContent = isDark ? "Light Mode" : "Dark Mode";
+});
+</script>
+
+</body>
+</html>
